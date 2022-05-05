@@ -4,11 +4,17 @@
 This is a Python-built CLI quiz for quizzes from ExamTopics. 
 It gets questions from pages (saved locally as HTML at the moment),
 shuffles them, you pick answers and then you are shown a 
-final score and then questions you got wrong that are 
-written in a `.txt` file.
+final score and then questions you got wrong are 
+written in a `.txt` file. Correct answers are taken from the
+discussions.
+
+It looks like this (example from the Google ACE exam, obviously
+without the red markings):
+
+![how_it_looks](https://i.imgur.com/7VED0g3.png)
 
 ## ⚠️ READ BEORE YOU START
-This was initially tested on Windows and seems to work alright.
+This was initially tested on Windows and seems to work alright on this OS.
 
 ⚠️ As tested, saving a page with CTRL+s in ChromeOS does not save it
 in HTML by default, as needed by the application. In the dropdown 
@@ -48,8 +54,8 @@ command is called
 have a set of only n question before finishing and checking for wrong
 questions, where n is the number you choose
 9. Choose if you want the correct answer shown immediately after 
-giving an answer or choose "no" if you want  to check the file 
-at the end of the quiz
+giving an answer or choose "no" if you want  to only check the file 
+at the end of the quiz (a file is generated anyway)
 10. Answer the questions
 11. Review the .txt file that has been created when you have started
 the quiz
@@ -86,6 +92,7 @@ If you encounter any type a bug, please let me know by creating an
 [issue](https://github.com/awfulwaffle77/ExamTopicsQuizMaker/issues/new).
 
 ## Types of questions
-I am aware that there is at least one question with multiple answers. This quiz
-does **NOT YET** have support for these types of questions. I am unaware if it is
-even present in the list of questions as it may have a different tag.
+I am aware that there is at least one question with multiple answers. To
+answer those questions you have to write both answers concatenated, 
+without space. For example, if the correct answers are `B` and `E`, you
+have to write `BE`. 

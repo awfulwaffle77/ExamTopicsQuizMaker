@@ -21,13 +21,17 @@ class Quiz:
         """
             Initializez the varialbe that shows how many question should be shown in a quiz run
         """
-        self.__questions_per_quiz = \
-            int(input("How many questions do you want to have? (Max: " + str(len(self.__cardlist.cards_list)) + ") "))
 
-        while type(self.__questions_per_quiz) != int or self.__questions_per_quiz >= len(self.__cardlist.cards_list):
+        try:
             self.__questions_per_quiz = \
-                int(input("Please pick a NUMBER. (Max: " + str(len(self.__cardlist.cards_list)) + ")"))
+                int(input("How many questions do you want to have? (Max: " + str(len(self.__cardlist.cards_list)) + ") "))
 
+            while type(self.__questions_per_quiz) != int or self.__questions_per_quiz >= len(self.__cardlist.cards_list):
+                self.__questions_per_quiz = \
+                    int(input("Please pick a NUMBER. (Max: " + str(len(self.__cardlist.cards_list)) + ")"))
+        except:
+            print("Defaulted to max number of questions.")
+            self.__questions_per_quiz = len(self.__cardlist.cards_list)
 
     def __init_show_answer_immediately(self):
         """
@@ -94,7 +98,11 @@ class Quiz:
         wrong_answers_file.write(card.question_number + " " + wrapper.fill(text= card.question) + "\n")
         wrong_answers_file.write("-" * 40 + "\n")
         for ans in card.answers:
-            wrong_answers_file.write(wrapper.fill(ans) + "\n")
+            try:
+                wrong_answers_file.write(wrapper.fill(text= ans) + "\n")  # one answer had a weird encoding
+            except:
+                wrong_answers_file.write(ans + "\n")
+
         wrong_answers_file.write("Your answer: " + your_answer.upper() + "\n")
         wrong_answers_file.write("Correct answer: " + card.correct_answer + "\n")
         wrong_answers_file.write("-" * 40 + "\n")
@@ -114,8 +122,9 @@ class Quiz:
         print("Your quiz starts now. Please enter one single character, coresponding to the answers (A,B,C or D). Answers are NOT case sensitive, so response 'b' is good if 'B' is the correct answer.\n")
         input("Press Enter to continue..")
 
-        for card in self.quiz_cards:
+        for index, card in enumerate(self.quiz_cards):
             print("")
+            print(str(index + 1) + "/" + str(self.__questions_per_quiz))
             print(card.question_number + " " + wrapper.fill(text= card.question))
             print("-" * 40)
             for ans in card.answers:
