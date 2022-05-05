@@ -2,9 +2,10 @@
 
 ## What is this?
 This is a Python-built CLI quiz for quizzes from ExamTopics. 
-It gets questions from pages, shuffles them, you pick answers
-and then you are shown a final score and the questions you got
-wrong.
+It gets questions from pages (saved locally as HTML at the moment),
+shuffles them, you pick answers and then you are shown a 
+final score and then questions you got wrong that are 
+written in a `.txt` file.
 
 ## ⚠️ READ BEORE YOU START
 This was initially tested on Windows and seems to work alright.
@@ -24,11 +25,10 @@ in the ExamTopicsQuizMaker directory AFTER you clone it.
 1. Clone the repository with `git clone https://github.com/awfulwaffle77/ExamTopicsQuizMaker.git`
 or by going in the upper part of the page, clicking Code > Download ZIP (and unzip the archive)
 2. Create a new directory in the directory of the repository(inside ExamTopicsQuizMaker), 
-named `res` (or any other name, but also change the `RES_DIR` variable accordingly in `main.py`)
+named `res` 
 3. Go to the exam page that you want 
 (ex. https://www.examtopics.com/exams/google/associate-cloud-engineer/view/)
-4. CTRL+s to save the page. It has to be HTML. Save it in the `res`(or 
-the name you have chosen) directory
+4. CTRL+s to save the page. It has to be HTML. Save it in the `res` directory
 5. Repeat for all pages in the exam
 
 The structure of the folder should now be:
@@ -42,14 +42,16 @@ The structure of the folder should now be:
 &emsp;|-> 📄 all pages needed, in HTML format 
 
 6. Install requirements with `pip install -r requirements`
-7. Run `main.py` with `python main.py` or `python3 main.py`
+7. Run `main.py` with `python main.py` or however your python3
+command is called
 8. Choose how many questions you want per run. This is if you want to
-have a quiz of 30 question before finishing and checking for wrong
-questions 
-9. Choose if you want the correct answer shown immediately or "no" if you want 
-to check the file at the end of the quiz
-10.  Answer the questions
-11.  Review the .txt file that has been created when you have started
+have a set of only n question before finishing and checking for wrong
+questions, where n is the number you choose
+9. Choose if you want the correct answer shown immediately after 
+giving an answer or choose "no" if you want  to check the file 
+at the end of the quiz
+10. Answer the questions
+11. Review the .txt file that has been created when you have started
 the quiz
 
 ## Steps with images
