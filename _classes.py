@@ -87,6 +87,12 @@ class CardList:
         string = re.sub(r"[\n\s]$", "", string)  # not sure if this works properly
         string = re.sub(r"\n", " ", string)  # get rid of newlines in string
         string = re.sub(r"\s{2,}", " ", string)  # substitute more than 2 spaces in only 1
+        string = string.rstrip()  # remove trailing space if necessary
+        # get rid of Most Voted from the back of the answers
+        _ = string.split(" ")
+        if len(_) >= 2:
+            if " ".join(_[-2:]).lower() == "most voted":  # if last 2 words are 'most voted'
+                string = " ".join(_[:-2])  # get rid of them
 
         return string
 

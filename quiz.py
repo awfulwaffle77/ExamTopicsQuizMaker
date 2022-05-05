@@ -99,13 +99,14 @@ class Quiz:
         wrong_answers_file.write("-" * 40 + "\n")
         for ans in card.answers:
             try:
+                ans = str(ans.encode('utf-8'))  # some answers give a UnicodeEncodeError: 'charmap' codec can't encode character '\u05d2' in position 192: character maps to <undefined>
                 wrong_answers_file.write(wrapper.fill(text= ans) + "\n")  # one answer had a weird encoding
             except:
-                wrong_answers_file.write(ans + "\n")
+                wrong_answers_file.write(str(ans) + "\n")
 
         wrong_answers_file.write("Your answer: " + your_answer.upper() + "\n")
         wrong_answers_file.write("Correct answer: " + card.correct_answer + "\n")
-        wrong_answers_file.write("-" * 40 + "\n")
+        wrong_answers_file.write("-" * 40 + "\n\n")
 
 
     def start_quiz(self):
