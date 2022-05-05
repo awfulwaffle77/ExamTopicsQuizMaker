@@ -63,8 +63,3 @@ class Quiz:
         
         print("=^=" * 40)
         print("Your score: " + str(correct_answers) + "/" + str(self.__questions_per_quiz))
-
-# =========== DELETE THIS ===============
-quiz = Quiz("./res")
-
-quiz.start_quiz()
