@@ -1,37 +1,53 @@
+from attr import attr
 from bs4 import BeautifulSoup as bs
 import os 
+import re 
 
 RES_DIR = "./res"  # directory of resources
 
-class Page:
-    """ Represnts a structure which holds all the questions and answers on a HTML page. """
-    def __init__(self, _questions, _answers, _correct_answer) -> None:
-        self.questions = _questions
+class Card:
+    """ 
+        Represnts a structure which holds all a question with answers and a correct answer
+
+        ! To not be confused with a Page which would hold 4 Cards !
+    """
+    def __init__(self, _question, _answers, _correct_answer) -> None:
+        self.question = _question
         self.answers = _answers
         self.correct_answer = _correct_answer
+    
+
+    def print(self):
+        print("="*20)
+        print("Question: ")
+        print(self.question)
+        print("="*20)
+        print("~"*20)
+        print("Answers:")
+        print(self.answers)
+        print("~"*20)
+        print(self.correct_answer)
 
 
 class Quiz:
     """ Represents a structure that holds a list of Cards """
-    def __init__(self) -> None:
-        self.soup_list = self.__init_soup(self.__get_list_of_html())
-        self.pages_list = [] 
+    def __init__(self, resources_dir) -> None:
+        self.page_soup_list = self.__init_soup(self.__get_list_of_html(resources_dir))
+        self.cards_list = [] 
 
-        for soup in self.soup_list:
-            questions = self.__get_questions(soup)
-            answers = self.__get_answers(soup)
-            correct_answer = self.__get_correct_answers(soup)
-
-            self.pages_list.append(Page(questions, answers, correct_answer))
+        for page_soup in self.page_soup_list:
+            cards_on_page = self.__get_all_cards(page_soup)
+            for card in cards_on_page:
+                self.cards_list.append(card)
 
 
-    def __get_list_of_html(self) -> list:
+    def __get_list_of_html(self, resources_dir) -> list:
         """ Iterates through directory where HTML files are and
             returns their names
         """
         html = []
-        for file in os.listdir(RES_DIR):
-            _ = os.path.join(RES_DIR, file)
+        for file in os.listdir(resources_dir):
+            _ = os.path.join(resources_dir, file)
             if os.path.isfile(_):
                 html.append(_)
         return html  # order is irrelevant
@@ -46,34 +62,55 @@ class Quiz:
                 soup_list.append(soup)
         return soup_list
 
-
-    def __get_questions(self, soup) -> list:
-        """ Returns the 4 questions available in this soup as text.
-            This returns all the questions on a PAGE.
-         """
-        qbodies = soup.find_all("div", attrs={'class': "question-body"})  # question body
-
-        questions = []
-        for body in qbodies:
-            questions.append(body.find("p", attrs={'class': "card-text"}).text)
-        return questions
-
-
-    def __get_answers(self, soup) -> list:
-        abody = soup.find_all("div", attrs={'class': "question-choices-container"})  # answers body
-
-        answers = []
-        for body in abody:
-            set_of_answers = body.find_all("li", attrs={'class': "multi-choice-item"})  # answers on a card
-            set_of_answers = [_.text for _ in set_of_answers]  # get rid of tags
-            answers.append(set_of_answers)
-        
-        return answers
-
-
-    def __get_correct_answers(self, soup) -> list:
+    def __get_all_cards(self, page_soup):
         """ 
-        Returns a list with the correct answers on the page
+            Returns all cards (one question, 4 answers and one correct answer) that 
+            are on a page.
+        """
+        card_bodies = page_soup.find_all("div", attrs={'class': "card-body question-body"})  # the four card bodies on the page
+
+        cards = []
+        for card_body in card_bodies:
+            question = self.__get_question(card_body)
+            answers = self.__get_answers(card_body)
+            correct_answer = self.__get_correct_answer(card_body)
+            cards.append(Card(question, answers, correct_answer))
+
+        return cards
+
+    def __clean_string(self, string: str) -> str:
+        """ 
+            Removes \n and whitespace in front and back of the string
+        """
+        string = re.sub(r"^[\n\s]+", "", string)
+        string = re.sub(r"[\n\s]$", "", string)  # not sure if this works properly
+        string = re.sub(r"\n", " ", string)  # get rid of newlines in string
+        string = re.sub(r"\s{2,}", " ", string)  # substitute more than 2 spaces in only 1
+
+        return string
+
+
+    def __get_question(self, card_body) -> str:
+        """ 
+            Returns the question available in the body of this card
+        """
+        return self.__clean_string(card_body.find("p", attrs={'class': "card-text"}).text)
+
+
+    def __get_answers(self, card_body) -> list:
+        """ 
+            Returns the four answers available in the body of this card
+        """
+
+        set_of_answers = card_body.find_all("li", attrs={'class': "multi-choice-item"})  # answers on a card
+        set_of_answers = [self.__clean_string(_.text) for _ in set_of_answers]  # get rid of tags
+
+        return set_of_answers
+
+
+    def __get_correct_answer(self, card_body) -> str:
+        """ 
+        Returns the correct answer from a card.
 
         As the "correct answer" stated by ExamTopics is usually wrong,
         the metric that is used here is to get the most popular (first) 
@@ -92,32 +129,28 @@ class Quiz:
         default to the primary answer.
         """
 
-        cabody = soup.find_all("div", attrs={'class': "progress vote-distribution-bar"})  # correct answers body
+        cabody = card_body.find("p", attrs={'class': "card-text question-answer bg-light white-text"})  # correct answers body
 
-        canswers = []
-        for body in cabody:
-            # ================ HERE ===============
-            # Modify so it defaults to the answer chosen by ExamTopics to mitigate bug on page 10
-            card_cans = body.find_all("p", attrs={'class': "card-text question-answer bg-light white-text"}) # !!!
-            cans = card_cans.find("div", attrs={'class': "vote-bar progress-bar bg-primary"}).text  # corect answer on a card
-            cans = cans.split(" ")[0]  # answer is usually of type "<letter> <percentage>" and we only want the letter
-            canswers.append(cans)
-            # ======================================
+        comm_correct_answer = cabody.find("div", attrs={'class': "vote-bar progress-bar bg-primary"})  # the bar with community answer
+        
+        # in the cases where the community agrees with ExamTopics, there is no community voting bar
+        if comm_correct_answer != None:  
+            correct_answer = comm_correct_answer.text.split(" ")[0]  # vote-bar progress-bar bg-primary
+        else:
+            correct_answer = cabody.find("span",attrs={'class': "correct-answer"}).text
 
-        return canswers
+        return correct_answer
 
-
-    def get_questions(self) -> list:
-        """ Momentarily for debugging purposes I suppose.
-
-            Returns all questions (?)
+    def get_cards(self) -> list:
+        """ 
+            Momentarily for debugging purposes I suppose.
         """
+        return self.cards_list
 
-        questions = []
-        for page in self.pages_list:
-            questions.append(page.questions)
-        return questions 
 
 
 if __name__ == "__main__":
-    quiz = Quiz()
+    quiz = Quiz(RES_DIR)
+
+    for i in quiz.get_cards()[:9]:
+        i.print()
