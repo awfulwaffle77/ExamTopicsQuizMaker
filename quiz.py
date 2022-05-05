@@ -54,7 +54,7 @@ class Quiz:
         wrong_answers_file = open(filename, "w")  # file where the wrong answers will be written to
 
         print("Your quiz starts now. Please enter one single character, coresponding to the answers (A,B,C or D). Answers are NOT case sensitive, so response 'b' is good if 'B' is the correct answer.\n")
-        input("Press any key to continue..")
+        input("Press Enter to continue..")
 
         for card in self.quiz_cards:
             print("")
@@ -81,7 +81,7 @@ class Quiz:
             
             if self.__show_answer_immediately == "y":
                 print("Correct answer: ", card.correct_answer)
-                input("Press any key to continue..")
+                input("Press Enter to continue..")
             
         
         print("=^=" * 40)
