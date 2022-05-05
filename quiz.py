@@ -2,6 +2,7 @@ from io import TextIOWrapper
 from _classes import CardList, os, re
 import random
 from datetime import datetime 
+import textwrap
 
 class Quiz:
     def __init__(self, resources_dir = None) -> None:
@@ -33,10 +34,10 @@ class Quiz:
             Initializes the variable that decides if you want the correct answer shown after you respond
         """
         self.__show_answer_immediately = \
-            input("Do you want to have the answer shown immediately after you respond?\n(If not, you will be shown a score at the end and a file will be generated with all of your answers, highlighting the wrong ones.)[y/N] ")
+            input("Do you want to have the answer shown immediately after you respond?\n(If not, you will be shown a score at the end and a file will be generated with the wrong answers anyway.)[Y/n] ")
 
         if self.__show_answer_immediately == "":  # if only Enter was pressed
-            self.__show_answer_immediately = "n"  # default to n
+            self.__show_answer_immediately = "y"  # default to y
 
         self.__show_answer_immediately = self.__show_answer_immediately.lower()
         while self.__show_answer_immediately != "n" and self.__show_answer_immediately != "y":
@@ -87,10 +88,13 @@ class Quiz:
 
 
     def __write_to_file(self, wrong_answers_file, card, your_answer):
-        wrong_answers_file.write(card.question_number + " " + card.question + "\n")
+        
+        wrapper = textwrap.TextWrapper()  # wrap text so it looks better
+
+        wrong_answers_file.write(card.question_number + " " + wrapper.fill(text= card.question) + "\n")
         wrong_answers_file.write("-" * 40 + "\n")
         for ans in card.answers:
-            wrong_answers_file.write(ans + "\n")
+            wrong_answers_file.write(wrapper.fill(ans) + "\n")
         wrong_answers_file.write("Your answer: " + your_answer.upper() + "\n")
         wrong_answers_file.write("Correct answer: " + card.correct_answer + "\n")
         wrong_answers_file.write("-" * 40 + "\n")
@@ -105,16 +109,17 @@ class Quiz:
         correct_answers = 0  # initialize correct answers
 
         wrong_answers_file = self.__init_answers_file()
+        wrapper = textwrap.TextWrapper()  # wrap text so it looks better
         
         print("Your quiz starts now. Please enter one single character, coresponding to the answers (A,B,C or D). Answers are NOT case sensitive, so response 'b' is good if 'B' is the correct answer.\n")
         input("Press Enter to continue..")
 
         for card in self.quiz_cards:
             print("")
-            print(card.question_number + " " + card.question)
+            print(card.question_number + " " + wrapper.fill(text= card.question))
             print("-" * 40)
             for ans in card.answers:
-                print(ans)
+                print(wrapper.fill(text= ans))
             print("-" * 40)
             your_answer = ""
             while your_answer.upper() not in ['A', 'B', 'C', 'D']:
