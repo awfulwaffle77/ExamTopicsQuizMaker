@@ -94,6 +94,9 @@ class CardList:
             if " ".join(_[-2:]).lower() == "most voted":  # if last 2 words are 'most voted'
                 string = " ".join(_[:-2])  # get rid of them
 
+        # get rid of some weird non-ascii chars that break the app 
+        string = string.encode("ascii",errors="ignore").decode()
+
         return string
 
 
@@ -163,4 +166,4 @@ class CardList:
         """ 
             Getter for the lsit of cards    
         """
-        return self.__cards_list
+        return self.cards_list
