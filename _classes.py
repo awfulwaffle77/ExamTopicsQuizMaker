@@ -8,14 +8,19 @@ class Card:
 
         ! To not be confused with a Page which would hold 4 Cards !
     """
-    def __init__(self, _question: str, _answers: list, _correct_answer: str, _question_number: str) -> None:
+    def __init__(self, _question: str, _answers: list, _correct_answer: str, \
+        _question_number: str, _question_image_path: str) -> None:
+
         self.question = _question
         self.answers = _answers
         self.correct_answer = _correct_answer
         self.question_number = _question_number
+        self.question_image_path = _question_image_path
     
 
     def print_card(self):
+
+        """ Function for debugging purposes """
         print("="*20)
         print("Question ", self.question_number, ": ")
         print(self.question)
@@ -30,6 +35,7 @@ class Card:
 class CardList:
     """ Represents a structure that holds a list of Cards """
     def __init__(self, resources_dir) -> None:
+        self.__resources_dir = resources_dir
         self.__page_soup_list = self.__init_soup(self.__get_list_of_html(resources_dir))
         self.cards_list = [] 
 
@@ -41,10 +47,14 @@ class CardList:
 
     def __get_list_of_html(self, resources_dir) -> list:
         """ Iterates through directory where HTML files are and
-            returns their names
+            returns their names. As having an ampersand in their
+            names actually break the capability of image showing,
+            I will rename the files and folders, using only the
+            last number encountered.
         """
         html = []
-        for file in os.listdir(resources_dir):
+        for index, file in enumerate(os.listdir(resources_dir)):
+            os.rename(os.path(resources_dir, file), os.path.join(resources_dir, str(index)))
             _ = os.path.join(resources_dir, file)
             if os.path.isfile(_):
                 html.append(_)
@@ -74,7 +84,8 @@ class CardList:
             answers = self.__get_answers(card_body)
             correct_answer = self.__get_correct_answer(card_body)
             question_number = self.__get_question_number(card_body)
-            cards.append(Card(question, answers, correct_answer, question_number))
+            question_image_path = self.__get_question_image_path(card_body)
+            cards.append(Card(question, answers, correct_answer, question_number, question_image_path))
 
         return cards
 
@@ -109,6 +120,15 @@ class CardList:
             split to only get the number
         """
         return self.__clean_string(card_body.find("div", attrs={'class': "card-header text-white bg-primary"}).text).split(" ")[1]
+
+
+    def __get_question_image_path(self, card_body) -> str:
+        question_body = card_body.find("p", attrs={'class': "card-text"})
+        image_in_question_body = question_body.find("img")  # if there is a image in question body
+        if image_in_question_body:  # if image actually exists
+            return os.path.join(self.__resources_dir, image_in_question_body['src'])
+        else:
+            return None
 
         
     def __get_question(self, card_body) -> str:

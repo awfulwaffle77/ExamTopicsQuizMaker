@@ -3,6 +3,7 @@ from _classes import CardList, os, re
 import random
 from datetime import datetime 
 import textwrap
+from PIL import Image
 
 class Quiz:
     def __init__(self, resources_dir = None) -> None:
@@ -96,6 +97,8 @@ class Quiz:
         wrapper = textwrap.TextWrapper()  # wrap text so it looks better
 
         wrong_answers_file.write(card.question_number + " " + wrapper.fill(text= card.question) + "\n")
+        if card.question_image_path:
+            wrong_answers_file.write("Reference image: " + card.question_image_path + "\n")
         wrong_answers_file.write("-" * 40 + "\n")
         for ans in card.answers:
             try:
@@ -128,6 +131,13 @@ class Quiz:
             print(str(index + 1) + "/" + str(self.__questions_per_quiz))
             print(card.question_number + " " + wrapper.fill(text= card.question))
             print("-" * 40)
+
+            # show image if needed
+
+            if card.question_image_path:  # if an image exists
+                question_image = Image.open(card.question_image_path)
+                question_image.show()
+
             for ans in card.answers:
                 print(wrapper.fill(text= ans))
             print("-" * 40)
@@ -135,6 +145,9 @@ class Quiz:
             while your_answer.upper() not in ['A', 'B', 'C', 'D']:
                 your_answer = input("Your answer: ")
 
+            if card.question_image_path:  # if an image exists
+                question_image.close()  # close it
+            
             if your_answer.upper() == card.correct_answer:
                 correct_answers += 1
             else:
