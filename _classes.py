@@ -84,7 +84,7 @@ class CardList:
             Removes \n and whitespace in front and back of the string
         """
         string = re.sub(r"^[\n\s]+", "", string)
-        string = re.sub(r"[\n\s]$", "", string)  # not sure if this works properly
+        string = re.sub(r"[\n\s]+$", "", string)  # fixed: trailing spaces are now removed
         string = re.sub(r"\n", " ", string)  # get rid of newlines in string
         string = re.sub(r"\s{2,}", " ", string)  # substitute more than 2 spaces in only 1
         string = string.rstrip()  # remove trailing space if necessary
