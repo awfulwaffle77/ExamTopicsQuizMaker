@@ -26,7 +26,7 @@ class Quiz:
             self.__questions_per_quiz = \
                 int(input("How many questions do you want to have? (Max: " + str(len(self.__cardlist.cards_list)) + ") "))
 
-            while type(self.__questions_per_quiz) != int or self.__questions_per_quiz >= len(self.__cardlist.cards_list):
+            while type(self.__questions_per_quiz) != int or self.__questions_per_quiz > len(self.__cardlist.cards_list):
                 self.__questions_per_quiz = \
                     int(input("Please pick a NUMBER. (Max: " + str(len(self.__cardlist.cards_list)) + ")"))
         except:

@@ -25,7 +25,7 @@ menu, you have to select "Webpage, HTML Only".
 
 ## How do I get it working?
 *Note: If you want the quiz for **Google Associate Cloud Engineer**, you can get the res directory
-in the proper HTML format [here](https://www.udrop.com/6AuX/res.zip). Just unzip the archive
+in the proper HTML format [here](https://www.udrop.com/6ByU/res.zip). Just unzip the archive
 in the ExamTopicsQuizMaker directory AFTER you clone it and skip step 2.
 At the moment it does **not** contain questions that are only available
 to those with Contributor Access.*
