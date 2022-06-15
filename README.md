@@ -24,11 +24,10 @@ menu, you have to select "Webpage, HTML Only".
 
 
 ## How do I get it working?
-*Note: If you want the quiz for **Google Associate Cloud Engineer**, you can get the res directory
-in the proper HTML format [here](https://www.udrop.com/6ByU/res.zip). Just unzip the archive
-in the ExamTopicsQuizMaker directory AFTER you clone it and skip step 2.
-At the moment it does **not** contain questions that are only available
-to those with Contributor Access.*
+*Note for ACE: If you want the quiz for **Google Associate Cloud Engineer**, you can get the needed HTML file 
+[here](https://drive.google.com/file/d/1Iu-Zg7NzzqwxW2k-NTW1k9XG3u0IPu1U/view?usp=sharing). 
+Just unzip the archive and put it in a directory named `res`
+in the ExamTopicsQuizMaker directory AFTER you clone it and jump to step 6.*
 
 1. Clone the repository with `git clone https://github.com/awfulwaffle77/ExamTopicsQuizMaker.git`
 or by going in the upper part of the page, clicking Code > Download ZIP (and unzip the archive)
