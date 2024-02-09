@@ -151,14 +151,17 @@ class CardList:
         """
 
         cabody = card_body.find("p", attrs={'class': "card-text question-answer bg-light white-text"})  # correct answers body
-
-        comm_correct_answer = cabody.find("div", attrs={'class': "vote-bar progress-bar bg-primary"})  # the bar with community answer
+        if cabody is not None:
+            comm_correct_answer = cabody.find("div", attrs={'class': "vote-bar progress-bar bg-primary"})
+            comm_correct_answer = cabody.find("div", attrs={'class': "vote-bar progress-bar bg-primary"})  # the bar with community answer
         
         # in the cases where the community agrees with ExamTopics, there is no community voting bar
-        if comm_correct_answer != None:  
-            correct_answer = comm_correct_answer.text.split(" ")[0]  # vote-bar progress-bar bg-primary
+            if comm_correct_answer != None:  
+                correct_answer = comm_correct_answer.text.split(" ")[0]  # vote-bar progress-bar bg-primary
+            else:
+                correct_answer = cabody.find("span",attrs={'class': "correct-answer"}).text
         else:
-            correct_answer = cabody.find("span",attrs={'class': "correct-answer"}).text
+            correct_answer = None
 
         return correct_answer
 
@@ -167,3 +170,4 @@ class CardList:
             Getter for the lsit of cards    
         """
         return self.cards_list
+
